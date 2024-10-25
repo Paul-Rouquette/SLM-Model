@@ -9,10 +9,6 @@ The aim of this code file is to generate the figures of the paper:
     de Grecis
 
 """
-
-import os
-os.chdir("C:\\Users\\prouquette\\Documents\\SLM\\Codes_python\\article")
-
 import numpy as np
 import matplotlib.pyplot as plt
 
