@@ -11,11 +11,10 @@ The aim of this code file is to generate the figures of the paper:
 """
 
 import os
-os.chdir("C:\\Users\\prouquette\\Documents\\LGSbench\\code_python")
+os.chdir("C:\\Users\\prouquette\\Documents\\SLM\\Codes_python\\article")
 
 import numpy as np
 import matplotlib.pyplot as plt
-from astropy.io import fits
 
 plt.rcParams.update({'font.size': 15})
 
@@ -37,23 +36,19 @@ def sin_card(x):
     return y
 
 #%% read mesures - Fig 2
-# The measures are 3d data
 
-pathData = "C:\\Users\\prouquette\\Documents\\SLM\\Test_tilt\\tilt_fullsize_results_lambda_v2\\"
+pathData = "data\\"
+fname = pathData + 'SLMData.npz'
+data = np.load(fname)
+Nims = data['Nims']
 
 # 1) dark: measures obtained whithout light
-hdu = fits.open(pathData + 'dark.fit')[0]
-# Nims: number of images taken during the measures
-# Nx,Ny: number of pixels in the x and y directions
-(Nims,Ny,Nx) = np.shape(hdu.data)
-# Mean over the Nims images
-dark = np.sum(hdu.data,0)/Nims
+dark = data['dark']
+(Ny,Nx) = np.shape(dark)
 
 # 2) results when the SLM is used as a plain miror (no tilt is applied). It 
 # enables to define the x,y coordinates with (x,y)=(0,0) the optical axis
-hdu = fits.open(pathData + '0000.fit')[0]
-# Mean over the Nims images
-Im02D = np.sum(hdu.data,0)/Nims
+Im02D = data['tilt000']
 # remove dark
 Im02D = Im02D - dark
 # mean over the y direction
@@ -66,8 +61,7 @@ y = y - y[np.argmax(np.sum(Im02D,1)/Nx)]
 
 # 3) results when a tilt of 100 lambda is applied on the SLM (lambda is the 
 # wavelenght of the beam illuminating the SLM)
-hdu = fits.open(pathData + '0100.fit')[0]
-Im1002D = np.sum(hdu.data,0)/Nims
+Im1002D = data['tilt0100']
 Im1002D = Im1002D - dark
 Im100 = np.sum(Im1002D,0)/Ny
 Im1002D = abs((Im1002D>0)*Im1002D)
