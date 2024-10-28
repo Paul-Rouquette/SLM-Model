@@ -9,6 +9,10 @@ The aim of this code file is to generate the figures of the paper:
     de Grecis
 
 """
+
+import os
+os.chdir("C:\\Users\\prouquette\\Documents\\SLM\\Codes_python\\article")
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -279,6 +283,46 @@ plt.ylim(1e-7,1e-3)
 plt.legend(bbox_to_anchor=(1.04, 0.5), loc="center left", borderaxespad=0)
 plt.xlabel('x (pixels)')
 plt.ylabel('normalized units')
+plt.grid()
+plt.tight_layout()
+plt.show()
+
+#%% Efficiency - Fig 5
+
+phi = 3*np.pi
+phi_lambda = phi/np.pi/2
+phiw = [1*2*np.pi,0.99*2*np.pi,0.98*2*np.pi,0.97*2*np.pi]
+n = np.arange(3, 28, 0.1)
+
+eff = np.zeros((len(n),len(phiw)))
+for j in range(len(phiw)):
+    eff[:,j] = sin_card(phi/2/n*2*np.pi/phiw[j])**2*sin_card(np.pi*(1-2*np.pi/phiw[j]))**2
+
+plt.figure(7)
+plt.clf()
+indphiwplot = [0,3]
+for j in range(len(indphiwplot)):
+    plt.plot(n/phi_lambda,eff[:,indphiwplot[j]]*100, label = str(np.round(phiw[indphiwplot[j]]/2/np.pi,2)))
+plt.xlabel(r'$n/\phi (pixels/\lambda)$')
+plt.ylabel('Efficiency (%)')
+plt.xlim((min(n/phi_lambda),max(n/phi_lambda)))
+plt.ylim([40,100])
+plt.xticks(np.arange(2,20,2))
+plt.legend(title=r"$\phi_w/2/\pi$")
+plt.tight_layout()
+plt.grid()
+plt.show()
+
+plt.figure(8)
+plt.clf()
+for j in range(len(phiw)-1):
+    plt.plot(n/phi_lambda,(eff[:,0]-eff[:,j+1])/eff[:,0]*100,label=str(np.round(phiw[j+1]/2/np.pi,2)))
+plt.xlabel(r'$n/\phi (pixels/\lambda)$')
+plt.ylabel('Efficiency loss (%)')
+plt.xlim((min(n/phi_lambda),max(n/phi_lambda)))
+plt.legend(title=r"$\phi_w/2/\pi$")
+plt.ylim([0,7])
+plt.xticks(np.arange(2,20,2))
 plt.grid()
 plt.tight_layout()
 plt.show()
